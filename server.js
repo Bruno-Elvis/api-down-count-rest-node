@@ -1,9 +1,14 @@
 const fs = require('fs');
+
 const express = require('express');
 const app = express();
+
+const cors = require('cors');
+
 const data = require('./down-count.json');
 const port = process.env.PORT || 3000;
 
+app.use(cors());
 app.use(express.json());
 
 app.get('/', function (req, res) {
@@ -43,4 +48,6 @@ app.put('/', function (req, res) {
 
 });
 
-app.listen(port);
+app.listen(port, function () {
+    console.log(`Server rodando na porta : ${port}`);
+});
