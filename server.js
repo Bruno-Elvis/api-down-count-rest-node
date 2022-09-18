@@ -2,14 +2,15 @@ const fs = require('fs');
 const express = require('express');
 const app = express();
 const data = require('./down-count.json');
+const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
 app.get('/', function (req, res) {
+  res.json(data);
+
   res.send(`Server rodando! \n
   Contador atual: ${data.contador} - Última data: ${data.ultimaDataDownload || 'Sem data'}`);
-
-  res.json(data);
 
 });
 
@@ -28,12 +29,18 @@ app.put('/', function (req, res) {
     } catch (erro) {
         console.log(`Não foi possível incremetar o contador! Erro: ${erro.message}`);
         return res.status(500).json();
+    } finally {
+        fs.writeFile('./down-count.json', JSON.stringify(data), function(erro, result){
+            if (erro) throw new Error(erro);
+
+            console.log(result);
+
+        });
+        
     };
     
-    //fs.
-
     res.json(data);
 
 });
 
-app.listen(3000);
+app.listen(port);
